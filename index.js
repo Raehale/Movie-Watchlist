@@ -1,3 +1,6 @@
+let pageSearchList = false;
+let moviesHtmlArr = [];
+
 document.getElementById('searchBtn').addEventListener('click', function() {
     searchMovies(document.getElementById('searchBar').value);
 });
@@ -11,71 +14,87 @@ function searchMovies(searchedTerm) {
 }
 
 function renderMovies(moviesArr) {
-    let moviesHTML = '[]';
+    let moviesHTML = [];
     moviesHTML = moviesArr.map(movie => {
         const id = movie.imdbID;
-        fetch(`http://www.omdbapi.com/?apikey=48a8d3aa&i=${id}`, {
-            method: 'GET'
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data)
-            let movieObj = {
-                year: data.Year,
-                ratings: data.Ratings,
-                runtime: data.Runtime,
-                genre: data.Genre,
-                plot: data.Plot,
-            };
 
-            let value = 0;
-            let totalRating = 0;
-            movieObj.ratings.map(function(rating) {
-                if (rating.Value.includes('%')) {
-                    value = Number(rating.Value.slice(0, -1))/10;
-                } else if (rating.Value.includes('/100')) {
-                    value = Number(rating.Value.slice(0, -4))/10;
-                } else if (rating.Value.includes('/10')) {
-                    value = Number(rating.Value.slice(0, -3));
-                }
-                totalRating += value;
-
-                return totalRating;
-            })
-
-            if (movieObj.plot.length > 150) {
-                movieObj.plot = movieObj.plot.slice(0, 150) + `... <a class="read-more" id="readMore" data-id="${id}">Read more</a>`;
-            }
-
-            moviesHTML += `<article class="movie">
-                                <div class="movie-poster">
-                                    <img src="${movie.Poster}" alt="${movie.Title}" />
-                                </div>
-                                <div class="movie-info">
-                                    <div class="movie-title">
-                                        <h3>${movie.Title}</h3> 
-                                        <p>
-                                            <i class="fa-solid fa-star yellow-icon"></i> 
-                                            ${totalRating}
-                                        </p>
-                                    </div>
-                                    <div class="movie-details">
-                                        <p>${movieObj.runtime}</p>
-                                        <p>${movieObj.genre}</p>
-                                        <p class="add-to-watchlist" data-id="${id}"><i class="fa-solid fa-circle-plus white-icon"></i> Watchlist</p>
-                                    </div>
-                                    <p class="movie-plot">
-                                        ${movieObj.plot}
-                                    </p>
-                                </div>
-                            </article>
-                            <hr />`;
-
-            displayMovies(moviesHTML);
-        });
+        getMovieById(id);
+            // document.getElementById('addWatchlist').addEventListener('click', function(event) {
+            //     const selectedMovieId = event.target.dataset.addWatchlist;
+                
+            // });
     }).join('');
 }
 
-function displayMovies(html) {
+function getMovieById(movieId) {
+    let movieObj = {};
+    fetch(`http://www.omdbapi.com/?apikey=48a8d3aa&i=${movieId}`, {
+        method: 'GET'
+    })
+    .then(response => response.json())
+    .then(data => {
+        movieObj = {
+            title: data.Title,
+            poster: data.Poster,
+            year: data.Year,
+            ratings: data.Ratings,
+            runtime: data.Runtime,
+            genre: data.Genre,
+            plot: data.Plot,
+        };
+        createMoviesArrHtml(movieObj);
+    })
+}
+
+function createMoviesArrHtml(movie) {
+    console.log(movie)
+    let value = 0;
+    let totalRating = 0;
+
+    totalRating = movie.ratings.map(function(rating) {
+        if (rating.Value.includes('%')) {
+            value = Number(rating.Value.slice(0, -1))/10;
+        } else if (rating.Value.includes('/100')) {
+            value = Number(rating.Value.slice(0, -4))/10
+        } else if (rating.Value.includes('10')) {
+            value = Number(rating.Value.slice(0, -3));
+        }
+
+        return (totalRating + value)/(movie.ratings.length + 1);
+    })
+
+    if (movie.plot.length > length) {
+        movie.plot = movie.plot.slice(0, 150) + `... <p class="read-more" id="readMore" data-read-more-movie="${movie.imdbID}">ReadMore</p>`
+    }
+
+    moviesHtmlArr.push(`<article class="movie">
+                        <div class="movie-poster">
+                            <img src="${movie.poster}" alt="${movie.title}" />
+                        </div>
+                        <div class="movie-info">
+                            <div class="movie-title">
+                                <h3>${movie.title}</h3> 
+                                <p>
+                                    <i class="fa-solid fa-star yellow-icon"></i> 
+                                    ${totalRating}
+                                </p>
+                            </div>
+                            <div class="movie-details">
+                                <p>${movie.runtime}</p>
+                                <p>${movie.genre}</p>
+                                <p class="add-to-watchlist" id="addWatchlist"><i class="fa-solid fa-circle-plus white-icon" data-add-watchlist="${movie.imdbID}"></i> Watchlist</p>
+                            </div>
+                            <p class="movie-plot">
+                                ${movie.plot}
+                            </p>
+                        </div>
+                    </article>
+                    <hr />`);
+    displayMoviesHtml(moviesHtmlArr)
+}
+
+function displayMoviesHtml(html) {
     document.getElementById('exploreMovies').innerHTML = html;
 }
+
+const watchlistArr = [];
