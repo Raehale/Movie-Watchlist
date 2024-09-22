@@ -143,3 +143,11 @@ hr {
     width: 100%;
     border-color: #2C2C2C;
 }
+
+.show-text {
+    display: flex;
+}
+
+.hide-text {
+    display: none;
+}

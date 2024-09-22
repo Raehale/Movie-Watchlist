@@ -17,12 +17,7 @@ function renderMovies(moviesArr) {
     let moviesHTML = [];
     moviesHTML = moviesArr.map(movie => {
         const id = movie.imdbID;
-
         getMovieById(id);
-            // document.getElementById('addWatchlist').addEventListener('click', function(event) {
-            //     const selectedMovieId = event.target.dataset.addWatchlist;
-                
-            // });
     }).join('');
 }
 
@@ -34,6 +29,7 @@ function getMovieById(movieId) {
     .then(response => response.json())
     .then(data => {
         movieObj = {
+            id: data.imdbID,
             title: data.Title,
             poster: data.Poster,
             year: data.Year,
@@ -41,13 +37,13 @@ function getMovieById(movieId) {
             runtime: data.Runtime,
             genre: data.Genre,
             plot: data.Plot,
+            readMore: false,
         };
-        createMoviesArrHtml(movieObj);
+        createMovieHtml(movieObj);
     })
 }
 
-function createMoviesArrHtml(movie) {
-    console.log(movie)
+function createMovieHtml(movie) {
     let value = 0;
     let totalRating = 0;
 
@@ -59,42 +55,86 @@ function createMoviesArrHtml(movie) {
         } else if (rating.Value.includes('10')) {
             value = Number(rating.Value.slice(0, -3));
         }
+        totalRating += value;
+        // console.log(value)
+        // console.log(totalRating)
+        // console.log(movie.ratings.length)
+        // console.log('-----------')
+        return totalRating;
+    });
+    totalRating = (totalRating)/(movie.ratings.length)
 
-        return (totalRating + value)/(movie.ratings.length + 1);
-    })
-
-    if (movie.plot.length > length) {
-        movie.plot = movie.plot.slice(0, 150) + `... <p class="read-more" id="readMore" data-read-more-movie="${movie.imdbID}">ReadMore</p>`
+    if (movie.plot.length > 150) {
+        movie.plot = movie.plot.slice(0, 150) + `<p id="showingLess${movie.id}" class="showText">... <a class="read-more" data-read-more-movie="${movie.id}">Read More</a></p><p id="showingMore${movie.id}" class="hide-text">${movie.plot.slice(150, movie.plot.length)} <a data-read-more-movie="${movie.id}">Show Less</a></p>`
     }
 
-    moviesHtmlArr.push(`<article class="movie">
-                        <div class="movie-poster">
-                            <img src="${movie.poster}" alt="${movie.title}" />
-                        </div>
-                        <div class="movie-info">
-                            <div class="movie-title">
-                                <h3>${movie.title}</h3> 
-                                <p>
-                                    <i class="fa-solid fa-star yellow-icon"></i> 
-                                    ${totalRating}
+    const movieHtml = `<article class="movie">
+                            <div class="movie-poster">
+                                <img src="${movie.poster}" alt="${movie.title}" />
+                            </div>
+                            <div class="movie-info">
+                                <div class="movie-title">
+                                    <h3>${movie.title}</h3> 
+                                    <p>
+                                        <i class="fa-solid fa-star yellow-icon"></i> 
+                                        ${totalRating}
+                                    </p>
+                                </div>
+                                <div class="movie-details">
+                                    <p>${movie.runtime}</p>
+                                    <p>${movie.genre}</p>
+                                    <p class="add-to-watchlist"><i class="fa-solid fa-circle-plus white-icon" data-add-watchlist="${movie.id}"></i> Watchlist</p>
+                                </div>
+                                <p class="movie-plot">
+                                    ${movie.plot}
                                 </p>
                             </div>
-                            <div class="movie-details">
-                                <p>${movie.runtime}</p>
-                                <p>${movie.genre}</p>
-                                <p class="add-to-watchlist" id="addWatchlist"><i class="fa-solid fa-circle-plus white-icon" data-add-watchlist="${movie.imdbID}"></i> Watchlist</p>
-                            </div>
-                            <p class="movie-plot">
-                                ${movie.plot}
-                            </p>
-                        </div>
-                    </article>
-                    <hr />`);
-    displayMoviesHtml(moviesHtmlArr)
+                        </article>
+                        <hr />`;
+    // if (!movie.readMore) {
+        addMovieHtmltoArr(movieHtml);
+    // }
 }
 
+function addMovieHtmltoArr(html) {
+    moviesHtmlArr.push(html);
+    displayMoviesHtml(moviesHtmlArr);
+}
+
+const exploreMoviesEl = document.getElementById('exploreMovies');
+
 function displayMoviesHtml(html) {
-    document.getElementById('exploreMovies').innerHTML = html;
+    exploreMoviesEl.innerHTML = html;
 }
 
 const watchlistArr = [];
+
+
+exploreMoviesEl.addEventListener('click', function(event) {
+    console.log(event.target.dataset.readMoreMovie)
+    if (event.target.dataset.readMoreMovie) {
+        // movieObj = {
+        //     id: data.imdbID,
+        //     title: data.Title,
+        //     poster: data.Poster,
+        //     year: data.Year,
+        //     ratings: data.Ratings,
+        //     runtime: data.Runtime,
+        //     genre: data.Genre,
+        //     plot: data.Plot,
+        //     readMore: false,
+        // };
+
+        // createMovieHtml(movie)
+        let movieId = event.target.dataset.readMoreMovie;
+        let showingMoreId = `showingMore${movieId}`;
+        const showingMoreEl = document.getElementById(showingMoreId);
+        showingMoreEl.classList.toggle('show-text');
+        showingMoreEl.classList.toggle('hide-text');
+        let showingLessId = `showingLess${movieId}`;
+        const showingLessEl = document.getElementById(showingLessId);
+        showingLessEl.classList.toggle('show-text');
+        showingLessEl.classList.toggle('hide-text');
+
+    }
+})
