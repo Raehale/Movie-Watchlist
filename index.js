@@ -47,7 +47,7 @@ function createMovieHtml(movie) {
     let value = 0;
     let totalRating = 0;
 
-    totalRating = movie.ratings.map(function(rating) {
+    movie.ratings.map(function(rating) {
         if (rating.Value.includes('%')) {
             value = Number(rating.Value.slice(0, -1))/10;
         } else if (rating.Value.includes('/100')) {
@@ -56,13 +56,15 @@ function createMovieHtml(movie) {
             value = Number(rating.Value.slice(0, -3));
         }
         totalRating += value;
-        // console.log(value)
-        // console.log(totalRating)
-        // console.log(movie.ratings.length)
-        // console.log('-----------')
+        console.log(value)
+        console.log(totalRating)
+        console.log(movie.ratings.length)
+        console.log('---')
         return totalRating;
     });
-    totalRating = (totalRating)/(movie.ratings.length)
+    console.log(totalRating)
+    console.log('----------------')
+    totalRating = ((totalRating)/(movie.ratings.length)).toFixed(1)
 
     if (movie.plot.length > 150) {
         movie.plot = movie.plot.slice(0, 150) + `<p id="showingLess${movie.id}" class="showText">... <a class="read-more" data-read-more-movie="${movie.id}">Read More</a></p><p id="showingMore${movie.id}" class="hide-text">${movie.plot.slice(150, movie.plot.length)} <a data-read-more-movie="${movie.id}">Show Less</a></p>`
@@ -91,9 +93,7 @@ function createMovieHtml(movie) {
                             </div>
                         </article>
                         <hr />`;
-    // if (!movie.readMore) {
-        addMovieHtmltoArr(movieHtml);
-    // }
+    addMovieHtmltoArr(movieHtml);
 }
 
 function addMovieHtmltoArr(html) {
@@ -113,19 +113,6 @@ const watchlistArr = [];
 exploreMoviesEl.addEventListener('click', function(event) {
     console.log(event.target.dataset.readMoreMovie)
     if (event.target.dataset.readMoreMovie) {
-        // movieObj = {
-        //     id: data.imdbID,
-        //     title: data.Title,
-        //     poster: data.Poster,
-        //     year: data.Year,
-        //     ratings: data.Ratings,
-        //     runtime: data.Runtime,
-        //     genre: data.Genre,
-        //     plot: data.Plot,
-        //     readMore: false,
-        // };
-
-        // createMovieHtml(movie)
         let movieId = event.target.dataset.readMoreMovie;
         let showingMoreId = `showingMore${movieId}`;
         const showingMoreEl = document.getElementById(showingMoreId);
@@ -135,6 +122,5 @@ exploreMoviesEl.addEventListener('click', function(event) {
         const showingLessEl = document.getElementById(showingLessId);
         showingLessEl.classList.toggle('show-text');
         showingLessEl.classList.toggle('hide-text');
-
     }
 })
