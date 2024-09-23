@@ -104,6 +104,8 @@ function addMovieHtmltoArr(html) {
 const exploreMoviesEl = document.getElementById('exploreMovies');
 
 function displayMoviesHtml(html) {
+    exploreMoviesEl.style.position = 'static';
+    exploreMoviesEl.style.transform = 'none';
     exploreMoviesEl.innerHTML = html;
 }
 
