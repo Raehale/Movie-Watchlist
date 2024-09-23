@@ -109,9 +109,12 @@ function displayMoviesHtml(html) {
 
 const watchlistArr = [];
 
-
+const wishListArr = [];
 exploreMoviesEl.addEventListener('click', function(event) {
-    console.log(event.target.dataset.readMoreMovie)
+    const movieIdWatchlist = event.target.dataset.addWatchlist
+    if (movieIdWatchlist && !(wishListArr.indexOf(movieIdWatchlist) > -1)) {
+        wishListArr.push(movieIdWatchlist);
+    }
     if (event.target.dataset.readMoreMovie) {
         let movieId = event.target.dataset.readMoreMovie;
         let showingMoreId = `showingMore${movieId}`;
