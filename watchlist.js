@@ -1,8 +1,7 @@
-import { getMovieById } from './index.js';
+import { getMovieById, watchlistArr } from './index.js';
 
 const savedMoviesEl = document.getElementById('savedMovies');
 
-let watchlistArr = JSON.parse(localStorage.getItem('watchlist'));
 let moviesHtmlArr = [];
 
 // itterates through the watchlist array to create the movie blocks

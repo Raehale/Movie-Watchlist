@@ -120,4 +120,88 @@ function displayMoviesHtml(html, session) {
     }
 }
 
-export { getMovieById, watchlistArr }
+//shows no more than 150 char of the plot
+function showLessPlot(event) {
+    let movieId = event.target.dataset.readLessMovie;
+    const moviePlotEl = document.getElementById(`plot-${movieId}`);
+    let movieObj = {};
+
+    fetch(`http://www.omdbapi.com/?apikey=48a8d3aa&i=${movieId}`, {
+        method: 'GET'
+    })
+    .then(response => response.json())
+    .then(data => {
+        return movieObj = {
+            id: data.imdbID,
+            title: data.Title,
+            poster: data.Poster,
+            year: data.Year,
+            ratings: data.Ratings,
+            runtime: data.Runtime,
+            genre: data.Genre,
+            plot: data.Plot,
+            readMore: false,
+        };
+    })
+    .then(movie => {
+        moviePlotEl.innerHTML = `<p id="showingLess${movie.id}">
+                                    ${movie.plot.slice(0, 150)}... <a data-read-more-movie="${movie.id}">Read More</a>
+                                </p>`
+    })
+}
+
+// shows the whole movie plot
+function showMorePlot(event) {
+    let movieId = event.target.dataset.readMoreMovie;
+    const moviePlotEl = document.getElementById(`plot-${movieId}`);
+    let movieObj = {};
+
+    fetch(`http://www.omdbapi.com/?apikey=48a8d3aa&i=${movieId}`, {
+        method: 'GET'
+    })
+    .then(response => response.json())
+    .then(data => {
+        return movieObj = {
+            id: data.imdbID,
+            title: data.Title,
+            poster: data.Poster,
+            year: data.Year,
+            ratings: data.Ratings,
+            runtime: data.Runtime,
+            genre: data.Genre,
+            plot: data.Plot,
+            readMore: false,
+        };
+    })
+    .then(movie => {
+        moviePlotEl.innerHTML = `<p id="showingMore${movie.id}">
+                                    ${movie.plot} <a data-read-less-movie="${movie.id}"> Show Less</a>
+                                </p>`
+    })
+}
+
+// adds a movie to the watchlist and makes it remove-able
+function addToWatchlist(event) {
+    const movieId = event.target.dataset.addWatchlist;
+    if (movieId && !(watchlistArr.indexOf(movieId) > -1)) {
+        console.log(watchlistArr)
+        watchlistArr.push(movieId);
+        localStorage.setItem("watchlist", JSON.stringify(watchlistArr));
+
+        event.target.parentElement.innerHTML = `<i class="fa-solid fa-circle-minus white-icon" data-remove-watchlist="${movieId}"></i> Remove`;
+    }
+}
+
+// removes a movie from the watchlist and makes it add-able
+function removeFromWatchlist(event) {
+    const movieId = event.target.dataset.removeWatchlist;
+    if (movieId && watchlistArr.indexOf(movieId) > -1) {
+        const movieIndex = watchlistArr.indexOf(movieId);
+        watchlistArr.splice(movieIndex, 1);
+        localStorage.setItem("watchlist", JSON.stringify(watchlistArr));
+
+        event.target.parentElement.innerHTML = `<i class="fa-solid fa-circle-plus white-icon" data-add-watchlist="${movieId}"></i> Watchlist`;
+    }
+}
+
+export { getMovieById, watchlistArr, showLessPlot, showMorePlot, addToWatchlist, removeFromWatchlist }
