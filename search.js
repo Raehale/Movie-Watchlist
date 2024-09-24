@@ -64,8 +64,11 @@ function createMovieHtml(movie) {
     });
     totalRating = ((totalRating)/(movie.ratings.length)).toFixed(1)
 
+    let plot = movie.plot;
     if (movie.plot.length > 150) {
-        movie.plot = movie.plot.slice(0, 150) + `<p id="showingLess${movie.id}" class="showText">... <a class="read-more" data-read-more-movie="${movie.id}">Read More</a></p><p id="showingMore${movie.id}" class="hide-text">${movie.plot.slice(150, movie.plot.length)} <a data-read-more-movie="${movie.id}">Show Less</a></p>`
+        plot = movie.plot.slice(0, 150) + `<p id="showingLess${movie.id}" class="show-text">
+                                                ... <a class="read-more" data-read-more-movie="${movie.id}">Read More</a>
+                                            </p>`
     }
 
     const movieHtml = `<article class="movie">
@@ -85,9 +88,9 @@ function createMovieHtml(movie) {
                                     <p>${movie.genre}</p>
                                     <p class="add-to-watchlist"><i class="fa-solid fa-circle-plus white-icon" data-add-watchlist="${movie.id}"></i> Watchlist</p>
                                 </div>
-                                <p class="movie-plot">
-                                    ${movie.plot}
-                                </p>
+                                <div class="movie-plot" id="plot-${movie.id}">
+                                    ${plot}
+                                </div>
                             </div>
                         </article>
                         <hr />`;
@@ -114,15 +117,67 @@ exploreMoviesEl.addEventListener('click', function(event) {
     }
     
     if (event.target.dataset.readMoreMovie) {
-        let movieId = event.target.dataset.readMoreMovie;
-        let showingMoreId = `showingMore${movieId}`;
-        const showingMoreEl = document.getElementById(showingMoreId);
-        showingMoreEl.classList.toggle('show-text');
-        showingMoreEl.classList.toggle('hide-text');
-        let showingLessId = `showingLess${movieId}`;
-        const showingLessEl = document.getElementById(showingLessId);
-        showingLessEl.classList.toggle('show-text');
-        showingLessEl.classList.toggle('hide-text');
+        showMorePlot(event)
+    }
+    if (event.target.dataset.readLessMovie) {
+        showLessPlot(event)
     }
 })
 
+function showMorePlot(event) {
+    let movieId = event.target.dataset.readMoreMovie;
+    const moviePlotEl = document.getElementById(`plot-${movieId}`);
+    let movieObj = {};
+
+    fetch(`http://www.omdbapi.com/?apikey=48a8d3aa&i=${movieId}`, {
+        method: 'GET'
+    })
+    .then(response => response.json())
+    .then(data => {
+        return movieObj = {
+            id: data.imdbID,
+            title: data.Title,
+            poster: data.Poster,
+            year: data.Year,
+            ratings: data.Ratings,
+            runtime: data.Runtime,
+            genre: data.Genre,
+            plot: data.Plot,
+            readMore: false,
+        };
+    })
+    .then(movie => {
+        moviePlotEl.innerHTML = `<p id="showingMore${movie.id}">
+                                    ${movie.plot} <a data-read-less-movie="${movie.id}"> Show Less</a>
+                                </p>`
+    })
+}
+
+function showLessPlot(event) {
+    let movieId = event.target.dataset.readLessMovie;
+    const moviePlotEl = document.getElementById(`plot-${movieId}`);
+    let movieObj = {};
+
+    fetch(`http://www.omdbapi.com/?apikey=48a8d3aa&i=${movieId}`, {
+        method: 'GET'
+    })
+    .then(response => response.json())
+    .then(data => {
+        return movieObj = {
+            id: data.imdbID,
+            title: data.Title,
+            poster: data.Poster,
+            year: data.Year,
+            ratings: data.Ratings,
+            runtime: data.Runtime,
+            genre: data.Genre,
+            plot: data.Plot,
+            readMore: false,
+        };
+    })
+    .then(movie => {
+        moviePlotEl.innerHTML = `<p id="showingLess${movie.id}">
+                                    ${movie.plot.slice(0, 150)}... <a data-read-more-movie="${movie.id}">Read More</a>
+                                </p>`
+    })
+}

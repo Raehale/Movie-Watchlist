@@ -147,7 +147,7 @@ hr {
 }
 
 .show-text {
-    display: flex;
+    display: inline-block;
 }
 
 .hide-text {
