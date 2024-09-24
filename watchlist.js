@@ -1,7 +1,6 @@
 let watchlistArr = JSON.parse(localStorage.getItem('watchlist'));
 const savedMoviesEl = document.getElementById('savedMovies');
 let moviesHtmlArr = [];
-console.log(watchlistArr)
 
 watchlistArr.forEach(function(movieId) {
     getMovieById(movieId)
@@ -24,6 +23,7 @@ function getMovieById(movieId) {
             genre: data.Genre,
             plot: data.Plot,
             readMore: false,
+            inWatchlist: true,
         };
         createMovieHtml(movieObj);
     })
@@ -65,7 +65,7 @@ function createMovieHtml(movie) {
                                 <div class="movie-details">
                                     <p>${movie.runtime}</p>
                                     <p>${movie.genre}</p>
-                                    <p class="add-to-watchlist"><i class="fa-solid fa-circle-plus white-icon" data-add-watchlist="${movie.id}"></i> Watchlist</p>
+                                    <p class="add-to-watchlist"><i class="fa-solid fa-circle-minus white-icon" data-remove-watchlist="${movie.id}"></i> Remove</p>
                                 </div>
                                 <p class="movie-plot">
                                     ${movie.plot}
@@ -87,3 +87,39 @@ function displayMoviesHtml(html) {
     savedMoviesEl.style.transform = 'none';
     savedMoviesEl.innerHTML = html;
 }
+
+savedMoviesEl.addEventListener('click', function(event) {
+    const movieIdWatchlist = event.target.dataset.removeWatchlist
+    if (movieIdWatchlist && watchlistArr.indexOf(movieIdWatchlist) > -1) {
+        const movieIndex = watchlistArr.indexOf(movieIdWatchlist);
+        watchlistArr.splice(movieIndex, 1);
+
+        if (watchlistArr === undefined || watchlistArr.length == 0) {
+            savedMoviesEl.style.position = 'absolute';
+            savedMoviesEl.style.transform = 'translate(-50%, -50%)';
+            savedMoviesEl.innerHTML = `<p>Your watchlist is looking a little empty...</p>
+                                        <a href="./index.html">
+                                            <i class="fa-solid fa-circle-plus white-icon"></i> Let's add some movies!
+                                        </a>`;
+        } else {
+            moviesHtmlArr = [];
+            watchlistArr.forEach(function(movieId) {
+                getMovieById(movieId)
+            })
+        }
+
+        localStorage.setItem("watchlist", JSON.stringify(watchlistArr));
+    }
+    
+    if (event.target.dataset.readMoreMovie) {
+        let movieId = event.target.dataset.readMoreMovie;
+        let showingMoreId = `showingMore${movieId}`;
+        const showingMoreEl = document.getElementById(showingMoreId);
+        showingMoreEl.classList.toggle('show-text');
+        showingMoreEl.classList.toggle('hide-text');
+        let showingLessId = `showingLess${movieId}`;
+        const showingLessEl = document.getElementById(showingLessId);
+        showingLessEl.classList.toggle('show-text');
+        showingLessEl.classList.toggle('hide-text');
+    }
+})
