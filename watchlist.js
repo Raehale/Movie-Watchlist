@@ -65,7 +65,7 @@ function createMovieHtml(movie) {
                                 <div class="movie-details">
                                     <p>${movie.runtime}</p>
                                     <p>${movie.genre}</p>
-                                    <p class="add-to-watchlist"><i class="fa-solid fa-circle-plus white-icon" data-add-watchlist="${movie.id}"></i> Watchlist</p>
+                                    <p class="add-to-watchlist"><i class="fa-solid fa-circle-minus white-icon" data-add-watchlist="${movie.id}"></i> Remove</p>
                                 </div>
                                 <p class="movie-plot">
                                     ${movie.plot}
