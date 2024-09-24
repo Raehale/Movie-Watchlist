@@ -70,7 +70,8 @@ function createMovieHtml(movie) {
     }
 
     let watchlistHtml = '';
-    if (inWatchlist) {
+    console.log(movie.inWatchlist)
+    if (movie.inWatchlist) {
         watchlistHtml = `<p class="add-to-watchlist">
                             <i class="fa-solid fa-circle-minus white-icon" data-remove-watchlist="${movie.id}"></i> Remove
                         </p>`;
@@ -119,11 +120,14 @@ function displayMoviesHtml(html) {
 }
 
 exploreMoviesEl.addEventListener('click', function(event) {
-    const movieIdWatchlist = event.target.dataset.addWatchlist
-    if (movieIdWatchlist && !(watchlistArr.indexOf(movieIdWatchlist) > -1)) {
-        watchlistArr.push(movieIdWatchlist);
-        localStorage.setItem("watchlist", JSON.stringify(watchlistArr));
+    if (event.target.dataset.addWatchlist) {
+        addToWatchlist(event);
     }
+
+    if (event.target.dataset.removeWatchlist) {
+        removeFromWatchlist(event);
+    }
+
     
     if (event.target.dataset.readMoreMovie) {
         let movieId = event.target.dataset.readMoreMovie;
@@ -138,3 +142,23 @@ exploreMoviesEl.addEventListener('click', function(event) {
     }
 })
 
+function addToWatchlist(event) {
+    const movieId = event.target.dataset.addWatchlist;
+    if (movieId && !(watchlistArr.indexOf(movieId) > -1)) {
+        watchlistArr.push(movieId);
+        localStorage.setItem("watchlist", JSON.stringify(watchlistArr));
+
+        event.target.parentElement.innerHTML = `<i class="fa-solid fa-circle-minus white-icon" data-remove-watchlist="${movieId}"></i> Remove`
+    }
+}
+
+function removeFromWatchlist(event) {
+    const movieId = event.target.dataset.removeWatchlist;
+    if (movieId && watchlistArr.indexOf(movieId) > -1) {
+        const movieIndex = watchlistArr.indexOf(movieId);
+        watchlistArr.splice(movieIndex, 1);
+        localStorage.setItem("watchlist", JSON.stringify(watchlistArr));
+
+        event.target.parentElement.innerHTML = `<i class="fa-solid fa-circle-plus white-icon" data-add-watchlist="${movieId}"></i> Watchlist`
+    }
+}
