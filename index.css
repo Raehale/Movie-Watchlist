@@ -178,3 +178,19 @@ a:hover {
     color: orange;
     cursor: pointer;
 }
+
+@media screen and (min-width: 768px) {
+    main {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .movie-poster {
+        width: 15vw;
+    }
+    .movie-poster img {
+        width: 15vw;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+}
