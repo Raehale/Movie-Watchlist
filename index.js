@@ -3,6 +3,7 @@ let moviesHtmlArr = [];
 
 // finds a movie from the API using the ID
 function getMovieById(movieId, session) {
+    moviesHtmlArr = [];
     let movieObj = {};
     fetch(`http://www.omdbapi.com/?apikey=48a8d3aa&i=${movieId}`, {
         method: 'GET'
@@ -109,14 +110,16 @@ function addMovieHtmltoArr(html, session) {
 function displayMoviesHtml(html, session) {
     if (session === 'search') {
         const exploreMoviesEl = document.getElementById('exploreMovies');
+        exploreMoviesEl.innerHTML = '';
         exploreMoviesEl.style.position = 'static';
         exploreMoviesEl.style.transform = 'none';
-        exploreMoviesEl.innerHTML = html;
+        exploreMoviesEl.innerHTML = html.join('');
     } else {
         const savedMoviesEl = document.getElementById('savedMovies');
+        savedMoviesEl.innerHTML = '';
         savedMoviesEl.style.position = 'static';
         savedMoviesEl.style.transform = 'none';
-        savedMoviesEl.innerHTML = html;
+        savedMoviesEl.innerHTML = html.join('');
     }
 }
 
@@ -195,7 +198,8 @@ function addToWatchlist(event) {
 // removes a movie from the watchlist and makes it add-able
 function removeFromWatchlist(event) {
     const movieId = event.target.dataset.removeWatchlist;
-    if (movieId && watchlistArr.indexOf(movieId) > -1) {
+    const movieIndex = watchlistArr.indexOf(movieId)
+    if (movieId && movieIndex > -1) {
         const movieIndex = watchlistArr.indexOf(movieId);
         watchlistArr.splice(movieIndex, 1);
         localStorage.setItem("watchlist", JSON.stringify(watchlistArr));

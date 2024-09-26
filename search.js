@@ -1,4 +1,3 @@
-
 import { getMovieById, watchlistArr, showLessPlot, showMorePlot, addToWatchlist, removeFromWatchlist } from './index.js';
 
 const exploreMoviesEl = document.getElementById('exploreMovies');
@@ -23,7 +22,7 @@ function renderMovies(moviesArr) {
     moviesHTML = moviesArr.map(movie => {
         const id = movie.imdbID;
         getMovieById(id, 'search');
-    }).join('');
+    });
 }
 
 // when a user clicks on the explore movies section they can either add to or remove from their watch list, or read more or less of the plot
