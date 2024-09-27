@@ -1,4 +1,4 @@
-let watchlistArr = JSON.parse(localStorage.getItem('watchlist'));
+let watchlistArr = JSON.parse(localStorage.getItem('watchlist')) || [];
 let moviesHtmlArr = [];
 
 // finds a movie from the API using the ID
@@ -20,7 +20,7 @@ function getMovieById(movieId, session) {
             genre: data.Genre,
             plot: data.Plot,
             readMore: false,
-            inWatchlist: watchlistArr !== null ? watchlistArr.indexOf(data.imdbID) > -1 : false,
+            inWatchlist: watchlistArr.indexOf(data.imdbID) > -1,
         };
         createMovieHtml(movieObj, session);
     })
@@ -186,8 +186,7 @@ function showMorePlot(event) {
 // adds a movie to the watchlist and makes it remove-able
 function addToWatchlist(event) {
     const movieId = event.target.dataset.addWatchlist;
-    if (movieId && !(watchlistArr.indexOf(movieId) > -1)) {
-        console.log(watchlistArr)
+    if (movieId) {
         watchlistArr.push(movieId);
         localStorage.setItem("watchlist", JSON.stringify(watchlistArr));
 
