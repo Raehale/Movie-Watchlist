@@ -20,7 +20,7 @@ function getMovieById(movieId, session) {
             genre: data.Genre,
             plot: data.Plot,
             readMore: false,
-            inWatchlist: watchlistArr.indexOf(data.imdbID) > -1,
+            inWatchlist: watchlistArr !== null ? watchlistArr.indexOf(data.imdbID) > -1 : false,
         };
         createMovieHtml(movieObj, session);
     })
