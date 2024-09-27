@@ -198,9 +198,35 @@ hr {
     }
 }
 
+@media screen and (max-width: 400px) {
+    header {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .search-form {
+        top: 145px;
+    }
+
+    .movie {
+        display: grid;
+        justify-content: center;
+    }
+
+    .movie-poster {
+        width: 80vw;
+    }
+
+    .movie-poster img {
+        width: 40vw;
+        margin: 0 auto;
+        display: block;
+    }
+}
+
 @media screen and (max-height: 480px) {
     .explore-movies,
     .saved-movies {
-        transform: translate(0, 0);
+        transform: translate(-50%, 0);
     }
 }
