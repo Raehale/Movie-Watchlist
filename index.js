@@ -5,7 +5,7 @@ let moviesHtmlArr = [];
 function getMovieById(movieId, session) {
     moviesHtmlArr = [];
     let movieObj = {};
-    fetch(`http://www.omdbapi.com/?apikey=48a8d3aa&i=${movieId}`, {
+    fetch(`https://www.omdbapi.com/?apikey=48a8d3aa&i=${movieId}`, {
         method: 'GET'
     })
     .then(response => response.json())
@@ -129,7 +129,7 @@ function showLessPlot(event) {
     const moviePlotEl = document.getElementById(`plot-${movieId}`);
     let movieObj = {};
 
-    fetch(`http://www.omdbapi.com/?apikey=48a8d3aa&i=${movieId}`, {
+    fetch(`https://www.omdbapi.com/?apikey=48a8d3aa&i=${movieId}`, {
         method: 'GET'
     })
     .then(response => response.json())
@@ -159,7 +159,7 @@ function showMorePlot(event) {
     const moviePlotEl = document.getElementById(`plot-${movieId}`);
     let movieObj = {};
 
-    fetch(`http://www.omdbapi.com/?apikey=48a8d3aa&i=${movieId}`, {
+    fetch(`https://www.omdbapi.com/?apikey=48a8d3aa&i=${movieId}`, {
         method: 'GET'
     })
     .then(response => response.json())
