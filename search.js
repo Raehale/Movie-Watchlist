@@ -9,7 +9,7 @@ document.getElementById('searchBtn').addEventListener('click', function() {
 
 // finds a movie based off a search
 function searchMovies(searchedTerm) {
-    fetch(`http://www.omdbapi.com/?apikey=48a8d3aa&s=${searchedTerm}`, {
+    fetch(`https://www.omdbapi.com/?apikey=48a8d3aa&s=${searchedTerm}`, {
         method: 'GET'
     })
     .then(response => response.json())
